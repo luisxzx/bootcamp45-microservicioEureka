@@ -1,0 +1,126 @@
+  openapi: 3.0.0
+  info:
+    title: Client API
+    version: 1.0.0
+    description: API for managing bank clients
+  servers:
+    - url: http://localhost:8080
+      description: Client Service
+  paths:
+    /clients:
+      get:
+        summary: Get all clients
+        operationId: getAllClients
+        responses:
+          '200':
+            description: List of clients retrieved successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Client'
+      post:
+        summary: Create a new client
+        operationId: createClient
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        responses:
+          '201':
+            description: Client created successfully
+          '400':
+            description: Bad request
+    /clients/{clientId}:
+      get:
+        summary: Get client by ID
+        operationId: getClientById
+        parameters:
+          - name: clientId
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Client details retrieved successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Client'
+          '404':
+            description: Client not found
+    /clients/bulk-retrieve:
+      post:
+        summary: Retrieve clients using a collection of IDs
+        operationId: bulkRetrieveClients
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        responses:
+          '200':
+            description: Clients retrieved successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Client'
+          '400':
+            description: Bad request
+          '404':
+            description: Clients not found
+  components:
+    schemas:
+      Client:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          documento:
+            type: string
+            description: Client's identification number
+          tipoClienteId:
+            type: string
+            description: Reference to the TipoCliente's ID
+        required:
+          - name
+          - documento
+          - tipoClienteId
+
+      TipoCliente:
+        type: object
+        properties:
+          id:
+            type: string
+          nombre:
+            type: string
+          perfilId:
+            type: string
+            description: Reference to the Perfil's ID
+        required:
+          - id
+          - nombre
+          - perfilId
+
+      Perfil:
+        type: object
+        properties:
+          id:
+            type: string
+          nombre:
+            type: string
+        required:
+          - id
+          - nombre
+
